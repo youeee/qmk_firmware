@@ -19,6 +19,7 @@
 #define _BASE 0
 #define _FN1 1
 #define _FN2 2
+#define _FN9_TOGGLE 9
 
 enum custom_keycodes {
   TESTASYNC = SAFE_RANGE,
@@ -28,9 +29,10 @@ enum custom_keycodes {
   GIT_ADD_ALL,
   GIT_COMMIT,
   GIT_PULL,
-  GIT_STASH_LIST,
+  GIT_STASH,
   GIT_STASH_POP,
-  GIT_STASH
+  GIT_STASH_LIST,
+  GIT_PUSH
 };
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
@@ -38,7 +40,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     case TESTASYNC:
       if (record->event.pressed) {
         // when keycode TESTASYNC is pressed
-        SEND_STRING("[Fact]\r\npublic async Task Test()\r\n{\r\n\t// Arrange \r\n\r\n\t// Act \r\n\r\n\t// Assert \r\n\r\n}\r\n");
+        SEND_STRING("[Fact]\r\npublic async Task Test()\r\n{\r\n\t// Arrange \r\n\r\n\t// Act \r\n\r\n\t// Assert \r\n\r\n\r\n");
         SEND_STRING(SS_TAP(X_UP)SS_TAP(X_UP)SS_TAP(X_UP)SS_TAP(X_UP)SS_TAP(X_UP)SS_TAP(X_UP)SS_TAP(X_UP)SS_TAP(X_UP)SS_TAP(X_UP));
         SEND_STRING(SS_TAP(X_RIGHT)SS_TAP(X_RIGHT)SS_TAP(X_RIGHT)SS_TAP(X_RIGHT)SS_TAP(X_RIGHT)SS_TAP(X_RIGHT)SS_TAP(X_RIGHT)SS_TAP(X_RIGHT)SS_TAP(X_RIGHT)SS_TAP(X_RIGHT)SS_TAP(X_RIGHT)SS_TAP(X_RIGHT)SS_TAP(X_RIGHT)SS_TAP(X_RIGHT)SS_TAP(X_RIGHT)SS_TAP(X_RIGHT)SS_TAP(X_RIGHT)SS_TAP(X_RIGHT));
       } else {
@@ -48,7 +50,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     case TESTSYNC:
       if (record->event.pressed) {
         // when keycode TESTSYNC is pressed
-        SEND_STRING("[Fact]\r\npublic void Test()\r\n{\r\n\t// Arrange \r\n\r\n\t// Act \r\n\r\n\t// Assert \r\n\r\n}\r\n");
+        SEND_STRING("[Fact]\r\npublic void Test()\r\n{\r\n\t// Arrange \r\n\r\n\t// Act \r\n\r\n\t// Assert \r\n\r\n\r\n");
         SEND_STRING(SS_TAP(X_UP)SS_TAP(X_UP)SS_TAP(X_UP)SS_TAP(X_UP)SS_TAP(X_UP)SS_TAP(X_UP)SS_TAP(X_UP)SS_TAP(X_UP)SS_TAP(X_UP));
         SEND_STRING(SS_TAP(X_RIGHT)SS_TAP(X_RIGHT)SS_TAP(X_RIGHT)SS_TAP(X_RIGHT)SS_TAP(X_RIGHT)SS_TAP(X_RIGHT)SS_TAP(X_RIGHT)SS_TAP(X_RIGHT)SS_TAP(X_RIGHT)SS_TAP(X_RIGHT)SS_TAP(X_RIGHT)SS_TAP(X_RIGHT));
       } else {
@@ -120,6 +122,14 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           // when keycode TESTSYNC is released
         }
         break;
+    case GIT_PUSH:
+        if (record->event.pressed) {
+          // when keycode TESTSYNC is pressed
+          SEND_STRING("git push");
+        } else {
+          // when keycode TESTSYNC is released
+        }
+        break;
      }
   return true;
 };
@@ -127,22 +137,28 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 	[_BASE] = LAYOUT(
-		TESTSYNC, TESTASYNC, KC_9, \
+		TESTSYNC, TESTASYNC, KC_1, \
 		KC_4, KC_5, KC_6, \
 		KC_A, KC_2, KC_3, \
-		MO(1), TO(1), KC_ENT \
+		OSL(9), TO(1), KC_ENT \
 	),
   
 	[_FN1] = LAYOUT(
 		KC_TRNS, KC_HOME, KC_PGUP, \
 		KC_TRNS, KC_END, KC_PGDN, \
 		KC_TRNS, KC_B, KC_TRNS, \
-		KC_TRNS, TO(2), KC_ENT \
+		OSL(9), TO(2), KC_ENT \
 	),
   [_FN2] = LAYOUT(
 		GIT_STATUS, GIT_LOG, KC_PGUP, \
 		GIT_ADD_ALL, GIT_COMMIT, GIT_PULL, \
 		GIT_STASH, GIT_STASH_POP, GIT_STASH_LIST, \
-		KC_TRNS, TO(0), KC_ENT \
+		OSL(9), GIT_PUSH, KC_ENT \
+	),
+  [_FN9_TOGGLE] = LAYOUT(
+		KC_TRNS, KC_TRNS, KC_TRNS, \
+		KC_TRNS, KC_TRNS, KC_TRNS, \
+		KC_TRNS, TO(2), KC_TRNS, \
+		KC_TRNS, TO(0), TO(1) \
 	)
 };
